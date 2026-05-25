@@ -1,0 +1,824 @@
+// -------------- THEME SWITCHER -------------- //
+@mixin dark-appearance {
+  filter: invert(1);
+  img {
+    filter: invert(1);
+
+    &.ioda { filter: invert(0); }
+  }
+  .emoji { filter: invert(1); }
+  iframe {
+    filter: invert(1);
+  }
+  /* The lightbox overlay sits inside <body>, so body's invert flips its
+     dim backdrop to near-white. Re-invert the lightbox itself, then null
+     the inner <img>'s own invert so the picture lands at its true colors. */
+  #lightbox {
+    filter: invert(1);
+    img { filter: none; }
+  }
+}
+
+body[a="dark"] { @include dark-appearance; }
+
+
+@media (prefers-color-scheme: dark) {
+  body[a="auto"] { @include dark-appearance; }
+}
+// -------------------------------------------- //
+
+// bg color is also needed in html in order to
+// block body's background propagation
+// see: https://stackoverflow.com/a/61265706
+html, body { background: white; }
+
+html { height: 100%; scroll-behavior: smooth; }
+
+/* =========================
+   Font Configuration
+   Chinese: LXGW WenKai Screen (loaded via CDN in head.html)
+   Latin/Code: Fira Code
+   ========================= */
+
+body {
+  color: black;
+
+  font-family: "Fira Code", "LXGW WenKai Screen", monospace;
+
+  font-size: 16px;
+  line-height: 1.4;
+  margin: 0;
+  min-height: 100%;
+  overflow-wrap: break-word;
+}
+
+.post-meta { text-align: right; }
+
+h2, h3, h4, h5, h6 { margin-top: 3rem; }
+
+hr { margin: 2rem 0; }
+
+p { margin: 1rem 0; }
+
+li { margin: 0.4rem 0; }
+
+*:target { background: yellow; }
+
+.w {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 4rem 2rem;
+}
+
+hr {
+  text-align: center;
+  border: 0;
+
+  &:before { content: '/////' }
+  &:after { content: attr(data-content) '/////' }
+}
+
+table { width: 100%; }
+
+table, th, td {
+  border: thin solid black;
+  border-collapse: collapse;
+  padding: 0.4rem;
+}
+
+code {
+  color: white;
+  background: black;
+}
+
+div.highlighter-rouge {
+  position: relative;
+}
+
+div.highlighter-rouge code {
+  display: block;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  padding: 1rem;
+}
+
+.copy-code-btn {
+  position: absolute;
+  top: 0.35rem;
+  right: 0.5rem;
+  padding: 0.05rem 0.4rem;
+  background: transparent;
+  border: none;
+  color: white;
+  font-family: inherit;
+  font-size: 0.8em;
+  line-height: 1.4;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 2;
+}
+
+div.highlighter-rouge:hover .copy-code-btn,
+.copy-code-btn:focus {
+  opacity: 0.55;
+}
+
+.copy-code-btn:hover {
+  opacity: 1;
+}
+
+blockquote {
+  font-style: italic;
+  border: thin solid black;
+  padding: 1rem;
+
+  p { margin: 0; }
+}
+
+img {
+  max-width: 100%;
+  display: block;
+  margin: 0 auto;
+}
+
+/* =========================
+   Hover tooltip — cursor-anchored, JS-driven.
+   `.tip` inside `.tip-host` is a data holder only (hidden). The global tip
+   element (#global-tip) is positioned next to the cursor by assets/js/tip.js.
+   Body's invert(1) dark-mode filter inverts it along with everything else.
+   ========================= */
+.tip-host .tip { display: none; }
+
+#global-tip {
+  position: fixed;
+  left: 0;
+  top: 0;
+  background: white;
+  color: black;
+  border: thin solid black;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.9em;
+  line-height: 1.5;
+  text-align: left;
+  white-space: normal;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+
+#global-tip.visible { opacity: 1; }
+
+#global-tip a { color: inherit; }
+
+/* Internal-link preview tooltip body. Built by tip.js when hovering an
+   <a> whose pathname matches a post in /search.json. */
+.link-preview .lp-title {
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+  line-height: 1.3;
+}
+
+.link-preview .lp-meta {
+  font-size: 0.8em;
+  opacity: 0.6;
+  margin-bottom: 0.4rem;
+}
+
+.link-preview .lp-desc {
+  font-size: 0.9em;
+  line-height: 1.5;
+  opacity: 0.85;
+}
+
+/* =========================
+   Tufte-style sidenotes (progressive enhancement)
+   sidenotes.js clones every footnote body next to its inline <sup> marker
+   as <aside class="sidenote">. We expose them only on wide viewports
+   (≥ 1100px) where there is room for a margin column to the right of the
+   640px content well. Below that, asides are hidden and the kramdown
+   tail-block rendering remains authoritative.
+   ========================= */
+.sidenote { display: none; }
+
+@media (min-width: 1100px) {
+  article { position: relative; }
+
+  article .sidenote {
+    display: block;
+    float: right;
+    clear: right;
+    width: 220px;
+    margin: 0 -240px 0.6rem 0;
+    padding: 0 0 0 0.6rem;
+    border-left: thin solid currentColor;
+    font-size: 0.82em;
+    line-height: 1.45;
+    opacity: 0.85;
+  }
+
+  article .sidenote .sidenote-num {
+    font-weight: bold;
+    margin-right: 0.35em;
+  }
+
+  article .sidenote p { margin: 0; }
+}
+
+@media (max-width: 1099px) {
+  article .sidenote { display: none !important; }
+}
+
+/* =========================
+   Site footer — wide layout single line, narrow stacks vertically
+   ========================= */
+.site-footer {
+  text-align: center;
+  padding: 1.25rem 1rem;
+  font-size: 0.8em;
+  flex-shrink: 0;
+  opacity: 0.55;
+}
+
+.site-footer-line {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  margin: 0;
+}
+
+.site-footer .footer-item {
+  display: inline-flex;
+  align-items: center;
+  color: inherit;
+  text-decoration: none;
+}
+
+.site-footer .footer-item:hover { text-decoration: underline; }
+
+.site-footer .footer-item img {
+  height: 14px;
+  width: 14px;
+  margin: 0 0.3rem 0 0;
+  display: inline-block;
+}
+
+@media (max-width: 600px) {
+  .site-footer-line {
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .site-footer .footer-sep { display: none; }
+}
+
+/* =========================
+   Reading progress (top-of-viewport hairline)
+   ========================= */
+#reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: black;
+  transform: scaleX(0);
+  transform-origin: left center;
+  z-index: 200;
+  pointer-events: none;
+}
+
+/* =========================
+   Prev / next post navigation (chronological)
+   Stacks vertically on narrow screens; horizontal split on wider.
+   ========================= */
+.post-nav {
+  border-top: thin solid currentColor;
+  border-bottom: thin solid currentColor;
+  margin: 2.5rem 0 1rem;
+  padding: 0.6rem 0;
+  font-size: 0.9em;
+}
+
+.post-nav-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.post-nav-prev,
+.post-nav-next {
+  flex: 1 1 45%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.post-nav-next { text-align: right; }
+
+.post-nav-label {
+  font-size: 0.78em;
+  opacity: 0.55;
+  margin-bottom: 0.15rem;
+}
+
+@media (max-width: 480px) {
+  .post-nav-row { gap: 0.7rem; }
+  .post-nav-next { text-align: left; }
+}
+
+/* =========================
+   Callout / admonition blocks
+   Activated by callouts.js when a blockquote starts with [!TYPE].
+   Reuses the boxed look but kills the default blockquote italic.
+   ========================= */
+.callout {
+  font-style: normal;
+  margin: 1.5rem 0;
+}
+
+.callout p { font-style: normal; }
+
+.callout-label {
+  font-weight: bold;
+  font-size: 0.78em;
+  letter-spacing: 0.08em;
+  margin: 0 0 0.4rem 0;
+  opacity: 0.85;
+}
+
+/* Heavier border on warning / caution to lend weight without colour. */
+.callout-warning,
+.callout-caution {
+  border-style: double;
+  border-width: 3px;
+}
+
+/* =========================
+   Skip-to-content link (keyboard accessibility)
+   Off-screen by default; slides in on focus.
+   ========================= */
+.skip-link {
+  position: absolute;
+  top: -3rem;
+  left: 0.5rem;
+  padding: 0.4rem 0.7rem;
+  background: white;
+  color: black;
+  border: thin solid black;
+  text-decoration: none;
+  font-size: 0.9em;
+  z-index: 1000;
+  transition: top 0.15s;
+}
+
+.skip-link:focus { top: 0.5rem; }
+
+/* =========================
+   Keyboard focus outline
+   :focus-visible only fires for keyboard nav, not mouse clicks.
+   ========================= */
+:focus-visible {
+  outline: 1px dashed currentColor;
+  outline-offset: 2px;
+}
+
+/* Drop the default outline since :focus-visible covers it. */
+:focus:not(:focus-visible) { outline: none; }
+
+/* =========================
+   Reduced-motion preference
+   Kills transitions/animations for vestibular-sensitive users.
+   ========================= */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* =========================
+   Image lightbox
+   ========================= */
+main img:not(.no-zoom) { cursor: zoom-in; }
+
+#lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 500;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  cursor: zoom-out;
+}
+
+#lightbox.visible { display: flex; }
+
+#lightbox img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  margin: 0;
+  display: block;
+}
+
+/* =========================
+   Print stylesheet — strip chrome, force black-on-white, expand link URLs
+   ========================= */
+@media print {
+  html, body {
+    filter: none !important;
+    background: white !important;
+    color: black !important;
+  }
+
+  body[a="dark"], body[a="auto"] { filter: none !important; }
+
+  .back-to-top,
+  #global-tip,
+  #reading-progress,
+  #lightbox,
+  .copy-code-btn,
+  .anchor-link,
+  .site-footer,
+  header { display: none !important; }
+
+  .w {
+    max-width: none;
+    margin: 0;
+    padding: 1rem 0.5rem;
+  }
+
+  article {
+    font-size: 11pt;
+    line-height: 1.5;
+  }
+
+  /* Sidenotes hidden — let kramdown's tail .footnotes block carry the
+     numbered notes for paper. */
+  article .sidenote { display: none !important; }
+
+  /* Inline link URLs after every external/internal link (skip in-page anchors
+     and tag/category navigation links so they don't bloat). */
+  article a[href^="http"]::after {
+    content: " <" attr(href) ">";
+    font-size: 0.85em;
+    word-break: break-all;
+  }
+
+  /* Code: avoid inverse colors; lighten the background since printers
+     handle large solid blacks poorly. */
+  code,
+  div.highlighter-rouge code {
+    color: black !important;
+    background: white !important;
+    border: thin solid #999;
+  }
+
+  /* Hide post-list helper boxes — they're navigational. */
+  .related-posts,
+  .backlinks,
+  .series-nav,
+  .toc,
+  .post-taxonomy { display: none !important; }
+
+  /* Discourage breaks inside atomic units. */
+  pre, blockquote, table, figure { page-break-inside: avoid; }
+  h1, h2, h3 { page-break-after: avoid; }
+  p, li { orphans: 3; widows: 3; }
+}
+
+/* =========================
+   Post-meta tags/categories rows
+   Each taxonomy kind is its own right-aligned line; the label and first item
+   form a non-breaking group so the label never wraps away from its first tag.
+   Subsequent items wrap freely between each other.
+   ========================= */
+.post-taxonomy {
+  text-align: right;
+  font-size: 0.9em;
+  margin: -0.2rem 0 1.5rem;
+}
+
+.post-taxonomy-row {
+  margin: 0.2rem 0;
+  line-height: 1.9;
+}
+
+.post-taxonomy .tax-group { white-space: nowrap; }
+
+.post-taxonomy .tax-label { opacity: 0.7; }
+
+.post-taxonomy .tax-item {
+  display: inline-block;
+  text-decoration: none;
+  border-bottom: thin dotted;
+  padding: 0 0.05em 0.05em;
+}
+
+/* Direct children only — the first item lives inside .tax-group with the
+   label, so it shouldn't get the leading separator margin. */
+.post-taxonomy-row > .tax-item { margin-left: 0.6em; }
+
+.post-taxonomy .tax-item:hover { border-bottom-style: solid; }
+
+/* =========================
+   Archive / tag / category list — extra description line under each entry
+   ========================= */
+.archive-list { list-style: none; padding-left: 0; }
+
+.archive-list > li {
+  margin: 0.7rem 0;
+}
+
+.post-list-desc {
+  font-size: 0.85em;
+  opacity: 0.55;
+  margin: 0.15rem 0 0 0;
+  line-height: 1.4;
+  padding-left: 1.5em;
+}
+
+/* =========================
+   Search result snippet + match highlighting
+   ========================= */
+.search-snippet {
+  font-size: 0.85em;
+  opacity: 0.7;
+  margin: 0.2rem 0 0.4rem 1.5em;
+  line-height: 1.5;
+}
+
+.search-snippet mark,
+mark {
+  background: yellow;
+  color: inherit;
+  padding: 0 0.1em;
+}
+
+/* =========================
+   Tag / category cloud (top of /tags and /categories)
+   Size weighted by post count; alphabetical order preserved.
+   ========================= */
+.tag-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.9rem;
+  align-items: baseline;
+  margin: 1rem 0 2rem;
+  line-height: 1.6;
+}
+
+.tag-cloud a {
+  text-decoration: none;
+  border-bottom: thin dotted;
+}
+
+.tag-cloud a:hover { border-bottom-style: solid; }
+
+.tag-cloud .tc-sm { font-size: 0.85em; opacity: 0.7; }
+.tag-cloud .tc-md { font-size: 1em; }
+.tag-cloud .tc-lg { font-size: 1.25em; }
+.tag-cloud .tc-xl { font-size: 1.55em; }
+
+.tc-count {
+  font-size: 0.6em;
+  opacity: 0.5;
+  margin-left: 0.15em;
+  vertical-align: super;
+}
+
+/* =========================
+   Image with caption
+   Created from kramdown's ![alt](url "caption") via figcaptions.js
+   ========================= */
+figure.fig-image {
+  margin: 1.5rem 0;
+  text-align: center;
+}
+
+figure.fig-image img {
+  margin: 0 auto;
+  display: block;
+}
+
+figure.fig-image figcaption {
+  font-size: 0.85em;
+  opacity: 0.65;
+  margin-top: 0.5rem;
+  line-height: 1.45;
+}
+
+/* =========================
+   Mermaid diagrams
+   .mermaid divs are converted in place to SVG by mermaid.run().
+   While the CDN is loading they hold the source as text — `.mermaid-pending`
+   styles that loading state so a slow / failed CDN doesn't leave a blank gap.
+   Body's invert(1) dark-mode flip handles colour automatically since
+   mermaid's "neutral" theme is grayscale.
+   ========================= */
+.mermaid {
+  margin: 1.5rem 0;
+  text-align: center;
+  overflow-x: auto;
+}
+
+.mermaid svg {
+  max-width: 100%;
+  height: auto;
+  display: inline-block;
+}
+
+.mermaid-pending {
+  text-align: left;
+  font-family: "Fira Code", monospace;
+  white-space: pre-wrap;
+  border: thin dashed currentColor;
+  padding: 0.5rem 0.7rem;
+  font-size: 0.85em;
+  opacity: 0.5;
+}
+
+/* =========================
+   Stats page (/stats/)
+   Per-post hit counts from GoatCounter rendered as a horizontal text bar.
+   The bar is a translucent currentColor rectangle behind the row.
+   ========================= */
+.stats-info {
+  font-size: 0.9em;
+  opacity: 0.7;
+  margin: 1rem 0 1.5rem;
+}
+
+.stats-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.stats-list li {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.5rem 1rem;
+  align-items: baseline;
+  position: relative;
+  padding: 0.4rem 0.5rem;
+  margin: 0;
+  border-bottom: thin solid currentColor;
+  overflow: hidden;
+}
+
+.stats-list .stats-bar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  background: currentColor;
+  opacity: 0.07;
+  z-index: 0;
+  pointer-events: none;
+  transition: width 0.4s ease-out;
+}
+
+.stats-list .stats-title,
+.stats-list .stats-num {
+  position: relative;
+  z-index: 1;
+}
+
+.stats-list .stats-title {
+  text-decoration: none;
+  border-bottom: thin dotted;
+}
+
+.stats-list .stats-title:hover { border-bottom-style: solid; }
+
+.stats-list .stats-num {
+  font-variant-numeric: tabular-nums;
+  font-size: 0.95em;
+  opacity: 0.75;
+}
+
+/* =========================
+   Heading anchor (#) link
+   ========================= */
+.anchor-link {
+  margin-left: 0.4rem;
+  text-decoration: none;
+  opacity: 0;
+  font-weight: normal;
+  transition: opacity 0.15s;
+}
+
+h2:hover .anchor-link,
+h3:hover .anchor-link,
+.anchor-link:focus {
+  opacity: 0.45;
+}
+
+/* =========================
+   Back-to-top button
+   Default: viewport bottom-right (fallback for narrow screens).
+   On wide screens (≥ 800px), anchor it just outside the right edge of the
+   .w content column (max-width 640px, centered) so it sits next to the
+   text rather than across the screen.
+   ========================= */
+.back-to-top {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1rem;
+  padding: 0.3rem 0.6rem;
+  background: white;
+  color: black;
+  border: thin solid black;
+  font-family: inherit;
+  font-size: 0.85em;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+  z-index: 100;
+}
+
+@media (min-width: 800px) {
+  .back-to-top {
+    /* .w right edge sits at 50vw + 320px; offset the button just past it. */
+    right: auto;
+    left: calc(50% + 320px + 0.5rem);
+  }
+}
+
+.back-to-top.visible {
+  opacity: 0.75;
+  pointer-events: auto;
+}
+
+.back-to-top:hover { opacity: 1; }
+
+/* =========================
+   Theme toggle button (top-right, cycles auto/light/dark)
+   ========================= */
+.theme-toggle {
+  position: fixed;
+  top: 1.2rem;
+  right: 1.2rem;
+  padding: 0.2rem 0.55rem;
+  background: white;
+  color: black;
+  border: thin solid black;
+  font-family: inherit;
+  font-size: 0.75em;
+  line-height: 1.2;
+  cursor: pointer;
+  opacity: 0.45;
+  transition: opacity 0.2s;
+  z-index: 100;
+}
+
+.theme-toggle:hover { opacity: 1; }
+
+@media print {
+  .theme-toggle { display: none !important; }
+}
+
+/* =========================
+   Keyboard navigation cursor (j/k highlight)
+   ========================= */
+.archive-list li.kb-cursor,
+ul#search-results li.kb-cursor {
+  background: yellow;
+  outline: 2px solid yellow;
+  outline-offset: 0;
+}
+
+/* =========================
+   Search history items
+   ========================= */
+.search-history-item {
+  list-style: none;
+  margin: 0.2rem 0;
+  opacity: 0.85;
+}
+
+.search-history-item a {
+  text-decoration: none;
+  border-bottom: thin dotted;
+}
+
+.search-history-item a:hover { border-bottom-style: solid; }
+
+#search-history-clear {
+  font-size: 0.85em;
+  margin-left: 0.4rem;
+}

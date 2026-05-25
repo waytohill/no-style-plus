@@ -1,0 +1,9 @@
+_site/
+.sass-cache/
+.jekyll-cache/
+.jekyll-metadata
+.jektex-cache/
+.bundle/
+vendor/
+.claude/
+CLAUDE.md

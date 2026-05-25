@@ -1,0 +1,19 @@
+{%- if page.series -%}
+  {%- assign series_posts = site.posts | where: "series", page.series | sort: "date" -%}
+  {%- if series_posts.size > 1 -%}
+<section class="series-nav" style="border: thin solid black; padding: 0.6rem 1rem; margin: 1rem 0;">
+  <p style="margin: 0 0 0.4rem 0;">Series: {{ page.series }} ({{ series_posts.size }} posts)</p>
+  <ol style="margin: 0;">
+    {%- for p in series_posts -%}
+      <li>
+        {%- if p.url == page.url -%}
+          <strong>{{ p.title }}</strong> ← current
+        {%- else -%}
+          <a href="{{ p.url | relative_url }}">{{ p.title }}</a>
+        {%- endif -%}
+      </li>
+    {%- endfor -%}
+  </ol>
+</section>
+  {%- endif -%}
+{%- endif -%}

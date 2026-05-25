@@ -1,0 +1,65 @@
+{%- comment -%}
+Menu item renderer. Overrides the no-style-please theme include.
+
+Adds hover tooltips for specific destinations:
+  - /tags/        → lists all site tags
+  - /categories/  → lists all site categories
+Other links render normally.
+{%- endcomment -%}
+<ul>
+  {%-for item in include.collection-%}
+    <li>
+    {%- if item.url -%}
+      {%- assign _u = item.url | remove: " " -%}
+      {%- if _u == "/tags/" or _u == "/tags" -%}
+        <span class="tip-host">
+          <a href="{{ item.url }}">{{ item.title }}</a>
+          {%- if site.tags.size > 0 -%}
+          <span class="tip" role="tooltip">
+            {%- assign sorted_tags = site.tags | sort -%}
+            {%- for tag in sorted_tags -%}
+              <a href="/tags/#{{ tag[0] | slugify }}">#{{ tag[0] }}</a>
+              <span style="opacity:0.5;">({{ tag[1].size }})</span>
+              {%- unless forloop.last %} · {% endunless -%}
+            {%- endfor -%}
+          </span>
+          {%- endif -%}
+        </span>
+      {%- elsif _u == "/categories/" or _u == "/categories" -%}
+        <span class="tip-host">
+          <a href="{{ item.url }}">{{ item.title }}</a>
+          {%- if site.categories.size > 0 -%}
+          <span class="tip" role="tooltip">
+            {%- assign sorted_cats = site.categories | sort -%}
+            {%- for cat in sorted_cats -%}
+              <a href="/categories/#{{ cat[0] | slugify }}">{{ cat[0] }}</a>
+              <span style="opacity:0.5;">({{ cat[1].size }})</span>
+              {%- unless forloop.last %} · {% endunless -%}
+            {%- endfor -%}
+          </span>
+          {%- endif -%}
+        </span>
+      {%- else -%}
+        <a href="{{ item.url }}">{{ item.title }}</a>
+      {%- endif -%}
+    {%- else -%}
+      {{ item.title }}
+    {%- endif -%}
+    </li>
+
+    {%-if item.post_list-%}
+      {%
+        include post_list.html
+          category=item.post_list.category
+          limit=item.post_list.limit
+          show_more=item.post_list.show_more
+          show_more_text=item.post_list.show_more_text
+          show_more_url=item.post_list.show_more_url
+     -%}
+    {%-endif-%}
+
+    {%-if item.entries-%}
+      {%-include menu_item.html collection=item.entries-%}
+    {%-endif-%}
+  {%-endfor-%}
+</ul>

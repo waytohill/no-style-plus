@@ -1,0 +1,91 @@
+---
+layout: default
+---
+
+{%-include back_link.html-%}
+
+{%- comment -%}
+Reading-time estimate, excluding code blocks. We split the rendered HTML
+on `<pre` and discard everything up to the matching `</pre>` so syntax-
+highlighted code doesn't inflate the count. 300 characters/min is the rough
+Chinese reading rate; English mixed in just rounds down a bit.
+{%- endcomment -%}
+{%- assign _chunks = content | split: '<pre' -%}
+{%- capture _stripped -%}
+  {{- _chunks[0] -}}
+  {%- for chunk in _chunks offset: 1 -%}
+    {%- assign _after = chunk | split: '</pre>' -%}
+    {{- _after[1] | default: "" -}}
+  {%- endfor -%}
+{%- endcapture -%}
+{%- assign content_text = _stripped | strip_html | strip_newlines -%}
+{%- assign char_count = content_text | size -%}
+{%- assign read_min = char_count | divided_by: 300 | plus: 1 -%}
+
+<article>
+  <h1>{{ page.title }}</h1>
+
+  <p class="post-meta">
+    <time datetime="{{ page.date }}">{{ page.date | date: site.theme_config.date_format }}</time>
+    {%- if page.last_modified_at -%}
+      {%- assign _date_str = page.date | date: site.theme_config.date_format -%}
+      {%- assign _mod_str = page.last_modified_at | date: site.theme_config.date_format -%}
+      {%- if _mod_str != _date_str %} · updated <time datetime="{{ page.last_modified_at }}">{{ _mod_str }}</time>{%- endif -%}
+    {%- endif -%}
+    · {{ char_count }} chars · ~{{ read_min }} min
+    {%- if site.goat_counter -%}
+      <span data-view-count data-gc-site="{{ site.goat_counter }}"></span>
+    {%- endif -%}
+  </p>
+
+  {%- if page.categories.size > 0 or page.tags.size > 0 -%}
+  <div class="post-taxonomy">
+    {%- if page.categories.size > 0 -%}
+    <p class="post-taxonomy-row">
+      {%- for cat in page.categories -%}
+        {%- if forloop.first -%}
+          <span class="tax-group"><span class="tax-label">cat: </span><a class="tax-item" href="{{ '/categories/' | relative_url }}#{{ cat | slugify }}">{{ cat }}</a></span>
+        {%- else -%}
+          <a class="tax-item" href="{{ '/categories/' | relative_url }}#{{ cat | slugify }}">{{ cat }}</a>
+        {%- endif -%}
+        {%- unless forloop.last %} {% endunless -%}
+      {%- endfor -%}
+    </p>
+    {%- endif -%}
+    {%- if page.tags.size > 0 -%}
+    <p class="post-taxonomy-row">
+      {%- for tag in page.tags -%}
+        {%- if forloop.first -%}
+          <span class="tax-group"><span class="tax-label">tags: </span><a class="tax-item" href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">#{{ tag }}</a></span>
+        {%- else -%}
+          <a class="tax-item" href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">#{{ tag }}</a>
+        {%- endif -%}
+        {%- unless forloop.last %} {% endunless -%}
+      {%- endfor -%}
+    </p>
+    {%- endif -%}
+  </div>
+  {%- endif -%}
+
+  {%- if page.series -%}
+    {%- include series_nav.html -%}
+  {%- endif -%}
+
+  {%- if page.toc -%}
+    {%- include toc.html -%}
+  {%- endif -%}
+
+  {{ content }}
+
+  {%- include backlinks.html -%}
+  {%- include related_posts.html -%}
+  {%- include post_nav.html -%}
+</article>
+
+<script src="{{ '/assets/js/copy-code.js' | relative_url }}" defer></script>
+<script src="{{ '/assets/js/anchor-links.js' | relative_url }}" defer></script>
+<script src="{{ '/assets/js/sidenotes.js' | relative_url }}" defer></script>
+<script src="{{ '/assets/js/callouts.js' | relative_url }}" defer></script>
+<script src="{{ '/assets/js/figcaptions.js' | relative_url }}" defer></script>
+<script src="{{ '/assets/js/mermaid.js' | relative_url }}" defer></script>
+<script src="{{ '/assets/js/view-count.js' | relative_url }}" defer></script>

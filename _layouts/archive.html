@@ -1,0 +1,35 @@
+---
+layout: default
+---
+
+{%-include back_link.html-%}
+
+<h1>{{ page.title }}</h1>
+
+{%- if page.which_category -%}
+  {%-include post_list.html category=page.which_category-%}
+{%- else -%}
+  {%- assign posts_by_year = site.posts | group_by_exp: "post", "post.date | date: '%Y'" -%}
+  {%- for year in posts_by_year -%}
+    <h2>{{ year.name }}</h2>
+    <ul class="archive-list">
+      {%- for post in year.items -%}
+        {%- assign desc = post.description | default: "" | strip -%}
+        {%- if desc == "" -%}
+          {%- assign desc = post.excerpt | strip_html | normalize_whitespace | truncate: 90 -%}
+        {%- endif -%}
+        <li>
+          <span>{{ post.date | date: site.theme_config.date_format }}</span>
+          {%- if site.theme_config.lowercase_titles -%}
+            <a href="{{ post.url | relative_url }}">{{ post.title | downcase }}</a>
+          {%- else -%}
+            <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+          {%- endif -%}
+          {%- if desc != "" -%}
+            <div class="post-list-desc">{{ desc }}</div>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ul>
+  {%- endfor -%}
+{%- endif -%}

@@ -1,0 +1,20 @@
+{%- comment -%}
+Auto TOC from rendered content. Opt-in via `toc: true` in front-matter.
+Parses <h2 id="..."> headings emitted by kramdown (auto_ids on by default).
+Nested h3s are not shown — keep the outline scannable.
+{%- endcomment -%}
+{%- assign h2_parts = content | split: '<h2 id="' -%}
+{%- if h2_parts.size > 1 -%}
+<nav class="toc" aria-label="Table of Contents" style="border: thin solid black; padding: 0.6rem 1rem; margin: 1rem 0;">
+  <p style="margin: 0 0 0.4rem 0;">Contents</p>
+  <ol style="margin: 0;">
+    {%- for part in h2_parts offset: 1 -%}
+      {%- assign head_chunk = part | split: '</h2>' | first -%}
+      {%- assign head_split = head_chunk | split: '">' -%}
+      {%- assign h_id = head_split | first -%}
+      {%- assign h_text = head_split | last | strip_html | strip -%}
+      <li><a href="#{{ h_id }}">{{ h_text }}</a></li>
+    {%- endfor -%}
+  </ol>
+</nav>
+{%- endif -%}

@@ -1,0 +1,27 @@
+{%- comment -%}
+Backlinks: list posts whose rendered HTML links to the current page.
+
+We look for href="<current>" or href="<current>#... patterns inside p.content
+so we don't false-match URLs that merely share a prefix with the current path.
+Renders nothing if no backlinks exist.
+{%- endcomment -%}
+{%- assign current_href = page.url | relative_url -%}
+{%- assign needle_exact = 'href="' | append: current_href | append: '"' -%}
+{%- assign needle_anchor = 'href="' | append: current_href | append: '#' -%}
+
+{%- capture backlinks_list -%}
+  {%- for p in site.posts -%}
+    {%- if p.url == page.url -%}{%- continue -%}{%- endif -%}
+    {%- if p.content contains needle_exact or p.content contains needle_anchor -%}
+<li><a href="{{ p.url | relative_url }}">{{ p.title }}</a></li>
+    {%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+
+{%- assign backlinks_trimmed = backlinks_list | strip -%}
+{%- if backlinks_trimmed != "" -%}
+<section class="backlinks" style="border: thin solid black; padding: 0.6rem 1rem; margin: 2rem 0;">
+  <p style="margin: 0 0 0.4rem 0;">Backlinks</p>
+  <ul style="margin: 0;">{{ backlinks_list }}</ul>
+</section>
+{%- endif -%}

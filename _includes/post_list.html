@@ -1,0 +1,63 @@
+{%-if include.category-%}
+  {%-assign posts = site.categories[include.category]-%}
+{%-else-%}
+  {%-assign posts = site.posts-%}
+{%-endif-%}
+
+{%-if include.limit and posts.size > include.limit-%}
+  {%-assign limit_exceeded = true-%}
+{%-else-%}
+  {%-assign limit_exceeded = false-%}
+{%-endif-%}
+
+{%- if posts.size > 0 -%}
+  <ul>
+    {%- for post in posts limit: include.limit -%}
+      {%- assign desc = post.description | default: "" | strip -%}
+      {%- if desc == "" -%}
+        {%- assign desc = post.excerpt | strip_html | normalize_whitespace | truncate: 140 -%}
+      {%- endif -%}
+      <li>
+        <span>{{- post.date | date: site.theme_config.date_format -}}</span>
+        {%- if desc != "" -%}
+        <span class="tip-host">
+          {%- if site.theme_config.lowercase_titles == true -%}
+          <a href="{{ post.url | relative_url }}">{{ post.title | downcase }}</a>
+          {%- else -%}
+          <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+          {%- endif -%}
+          <span class="tip" role="tooltip">{{ desc }}</span>
+        </span>
+        {%- else -%}
+          {%- if site.theme_config.lowercase_titles == true -%}
+          <a href="{{ post.url | relative_url }}">{{ post.title | downcase }}</a>
+          {%- else -%}
+          <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+          {%- endif -%}
+        {%- endif -%}
+      </li>
+    {%- endfor -%}
+    {%- if include.show_more and limit_exceeded -%}
+      {%- assign next_posts = posts | slice: include.limit, 5 -%}
+      <li>
+        {%- if next_posts.size > 0 -%}
+        <span class="tip-host">
+          <a href="{{ include.show_more_url }}">{{ include.show_more_text | default: "Show more..." }}</a>
+          <span class="tip" role="tooltip">
+            {%- for p in next_posts -%}
+              {%- if site.theme_config.lowercase_titles == true -%}
+                {{ p.title | downcase }}
+              {%- else -%}
+                {{ p.title }}
+              {%- endif -%}
+              {%- unless forloop.last %}<br>{% endunless -%}
+            {%- endfor -%}
+          </span>
+        </span>
+        {%- else -%}
+          <a href="{{ include.show_more_url }}">{{ include.show_more_text | default: "Show more..." }}</a>
+        {%- endif -%}
+      </li>
+    {%- endif -%}
+  </ul>
+{%- endif -%}

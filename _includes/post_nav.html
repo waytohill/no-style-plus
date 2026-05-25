@@ -1,0 +1,26 @@
+{%- comment -%}
+Chronological prev/next navigation. Jekyll's site.posts is sorted
+reverse-chronologically, so page.previous = newer, page.next = older.
+We rename for reader-facing labels (Older / Newer).
+Hidden when both ends are missing (single-post site).
+{%- endcomment -%}
+{%- assign older = page.next -%}
+{%- assign newer = page.previous -%}
+{%- if older or newer -%}
+<nav class="post-nav" aria-label="Post navigation">
+  <div class="post-nav-row">
+    <span class="post-nav-prev">
+      {%- if older -%}
+        <span class="post-nav-label">Older</span>
+        <a href="{{ older.url | relative_url }}">{{ older.title }}</a>
+      {%- endif -%}
+    </span>
+    <span class="post-nav-next">
+      {%- if newer -%}
+        <span class="post-nav-label">Newer</span>
+        <a href="{{ newer.url | relative_url }}">{{ newer.title }}</a>
+      {%- endif -%}
+    </span>
+  </div>
+</nav>
+{%- endif -%}

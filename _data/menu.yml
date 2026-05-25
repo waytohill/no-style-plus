@@ -1,0 +1,32 @@
+# For documentation on this file, see:
+# https://github.com/riggraz/no-style-please#customize-the-menu
+
+entries:
+  - title: info
+    entries:
+      - title: A blog powered by no-style-plus
+      - title: github
+        url: https://github.com/your-username/your-repo
+      - title: about
+        url: /about/
+
+  - title: all posts
+    post_list:
+      limit: 5
+      show_more: true
+      show_more_text: See archive...
+      show_more_url: /archive
+
+  - title: browse
+    entries:
+      - title: search
+        url: /search/
+      - title: tags
+        url: /tags/
+      - title: categories
+        url: /categories/
+      - title: stats
+        url: /stats/
+
+  - title: rss
+    url: feed.xml

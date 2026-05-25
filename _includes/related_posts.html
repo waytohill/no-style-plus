@@ -1,0 +1,80 @@
+{%- comment -%}
+Recommend related posts via priority sweep:
+  1. Same series first  (strongest signal)
+  2. Then shared category
+  3. Then shared tag
+Each pass uses string-tracked dedup so a post that already appeared above
+isn't picked again. Cap at 4 items. Section is omitted entirely if no
+candidate matches across all three signals.
+{%- endcomment -%}
+{%- assign _max = 4 -%}
+{%- assign _count = 0 -%}
+{%- assign _added = "" -%}
+
+{%- capture related_html -%}
+  {%- if page.series -%}
+    {%- for p in site.posts -%}
+      {%- if _count >= _max -%}{%- break -%}{%- endif -%}
+      {%- if p.url == page.url -%}{%- continue -%}{%- endif -%}
+      {%- if p.series == page.series -%}
+<li><a href="{{ p.url | relative_url }}">{{ p.title }}</a></li>
+        {%- assign _added = _added | append: "|" | append: p.url -%}
+        {%- assign _count = _count | plus: 1 -%}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endif -%}
+
+  {%- if page.categories.size > 0 -%}
+    {%- for p in site.posts -%}
+      {%- if _count >= _max -%}{%- break -%}{%- endif -%}
+      {%- if p.url == page.url -%}{%- continue -%}{%- endif -%}
+      {%- assign _key = "|" | append: p.url -%}
+      {%- if _added contains _key -%}{%- continue -%}{%- endif -%}
+      {%- assign _hit = false -%}
+      {%- if p.categories and p.categories.size > 0 -%}
+        {%- for c in page.categories -%}
+          {%- if p.categories contains c -%}
+            {%- assign _hit = true -%}
+            {%- break -%}
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endif -%}
+      {%- if _hit -%}
+<li><a href="{{ p.url | relative_url }}">{{ p.title }}</a></li>
+        {%- assign _added = _added | append: "|" | append: p.url -%}
+        {%- assign _count = _count | plus: 1 -%}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endif -%}
+
+  {%- if page.tags.size > 0 -%}
+    {%- for p in site.posts -%}
+      {%- if _count >= _max -%}{%- break -%}{%- endif -%}
+      {%- if p.url == page.url -%}{%- continue -%}{%- endif -%}
+      {%- assign _key = "|" | append: p.url -%}
+      {%- if _added contains _key -%}{%- continue -%}{%- endif -%}
+      {%- assign _hit = false -%}
+      {%- if p.tags and p.tags.size > 0 -%}
+        {%- for t in page.tags -%}
+          {%- if p.tags contains t -%}
+            {%- assign _hit = true -%}
+            {%- break -%}
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endif -%}
+      {%- if _hit -%}
+<li><a href="{{ p.url | relative_url }}">{{ p.title }}</a></li>
+        {%- assign _added = _added | append: "|" | append: p.url -%}
+        {%- assign _count = _count | plus: 1 -%}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endif -%}
+{%- endcapture -%}
+
+{%- assign related_trimmed = related_html | strip -%}
+{%- if related_trimmed != "" -%}
+<section class="related-posts" style="border: thin solid black; padding: 0.6rem 1rem; margin: 2rem 0;">
+  <p style="margin: 0 0 0.4rem 0;">Related Posts</p>
+  <ul style="margin: 0;">{{ related_html }}</ul>
+</section>
+{%- endif -%}

@@ -1,0 +1,31 @@
+# Canonical list of categories and tags used across the blog.
+#
+# Purpose: prevent case-mismatch bugs (e.g. "Linux" vs "linux" archived
+# separately by Jekyll). The script `new_post.py` reads this file when
+# scaffolding a post and normalises any user input case-insensitively
+# against the canonical names below. `scripts/check_frontmatter.py`
+# additionally fails the build when two posts pick different casings of
+# the same logical tag/category.
+#
+# Style:
+#   - Proper nouns and acronyms keep their natural casing (Linux, Python, CSS)
+#   - Generic / community-lowercase terms stay lowercase (vim, shell, web)
+#
+# Adding new entries: append below in ASCII-sorted order (uppercase before
+# lowercase). Then rerun `python scripts/check_frontmatter.py` to confirm
+# consistency.
+
+categories:
+  - tutorial
+  - notes
+  - project
+
+tags:
+  - CSS
+  - HTML
+  - JavaScript
+  - Linux
+  - Python
+  - shell
+  - vim
+  - web

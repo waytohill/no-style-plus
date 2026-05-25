@@ -1,0 +1,66 @@
+title: My Blog                # name of the site
+author: Your Name             # name of site's author
+email: you@example.com        # email of site's author
+url: https://yoursite.com     # root address of the site
+baseurl: ""                   # subpath of the site, e.g. "/blog"
+description: >
+  A blog built with no-style-plus.
+
+permalink: /:year/:month/:day/:title:output_ext
+
+favicon: "logo.png"           # name+extension of favicon (must be in root folder)
+
+# GoatCounter analytics (no cookies, no fingerprinting).
+# Register at https://www.goatcounter.com, then fill in your site slug below.
+# Uncomment to enable. Analytics only fire in production builds.
+# goat_counter: "yoursite"
+
+remote_theme: riggraz/no-style-please
+
+theme_config:
+  appearance: "auto"          # "light", "dark" or "auto"
+  back_home_text: ".."        # text for homepage link in post layout
+  date_format: "%Y-%m-%d"     # how dates are formatted
+  show_description: false     # show blog description on home page
+  lowercase_titles: true      # show titles in lowercase in lists
+
+sass:
+  style: compressed
+
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+  - jekyll-sitemap
+  - jektex
+
+jektex:
+  cache_dir: ".jektex-cache"
+  ignore: ["*.xml"]
+  silent: false
+  macros:
+    - ["\\Q", "\\mathbb{Q}"]
+    - ["\\C", "\\mathbb{C}"]
+
+feed:
+  excerpt_only: false
+  posts_limit: 20
+
+# Chinese ICP / public security codes — required for mainland China hosting.
+# Leave blank (or remove) if you don't need them.
+# icp_code: ""
+# gongan_code: ""
+
+# Giscus comments (opt-in per post via `comments: true` front-matter).
+# Get your IDs at https://giscus.app and fill them in below.
+giscus:
+  repo: "owner/repo"
+  repo_id: ""                 # from giscus.app
+  category: "General"
+  category_id: ""             # from giscus.app
+  mapping: "pathname"
+  strict: "0"
+  reactions_enabled: "1"
+  emit_metadata: "0"
+  input_position: "top"
+  theme: "preferred_color_scheme"
+  lang: "zh-CN"
