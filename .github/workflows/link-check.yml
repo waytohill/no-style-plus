@@ -24,6 +24,7 @@ jobs:
             --max-cache-age 7d
             --no-progress
             --max-retries 2
+            --config .lychee.toml
             --exclude-path _site
             --exclude-path vendor
             --exclude-path .jekyll-cache

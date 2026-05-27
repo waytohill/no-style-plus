@@ -22,4 +22,4 @@ series: "Demo Series"
 
 The navigation box is rendered by `_includes/series_nav.html` and appears automatically once at least two posts share the series name.
 
-See [Part 2](/2026/01/07/series-part-2/) to continue.
+The series navigation box at the top of this page links to Part 2.

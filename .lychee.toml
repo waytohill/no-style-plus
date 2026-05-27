@@ -1,0 +1,9 @@
+[exclude]
+patterns = [
+  # root-relative paths — unknown base URL at check time
+  "^/[^/]",
+  # Liquid template expressions in raw markdown (not processed by Jekyll)
+  "\\{\\{",
+  # placeholder URLs in README before demo is live
+  "your-demo-url",
+]
